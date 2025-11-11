@@ -1,4 +1,4 @@
 *.exe
 *.dsym
 main
-game
+game.DS_Store
