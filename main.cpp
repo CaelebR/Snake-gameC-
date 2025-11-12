@@ -10,19 +10,31 @@ Color green = {57, 255, 20, 255};
 int cellSize = 30;
 int cellCount = 25;
 
+double lastUpdateTime  = 0;
+
+bool eventTriggered(double interval) 
+{
+    double currentTime = GetTime();
+    if ((currentTime - lastUpdateTime) >= interval) {
+        lastUpdateTime = currentTime;
+        return true;
+    }
+    return false;
+}
 
 class Snake 
 {
     public :
-        deque<Vector2> body = {Vector2{6,9}, Vector2{5,9}, Vector2{4,9}};
-        Vector2 direction = {1,0};
+        deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
+        Vector2 direction = {1, 0};
 
-        void Draw() {
+        void Draw() 
+        {
             for (unsigned int i = 0; i < body.size(); i++)
             {
                 float x = body[i].x;
                 float y = body[i].y;
-                Rectangle segment = {x * cellSize, y * cellSize, (float)cellSize, (float)cellSize};
+                Rectangle segment = Rectangle{x * cellSize, y * cellSize, (float)cellSize, (float)cellSize};
                 DrawRectangleRounded(segment, 0.5, 6, green);
             }
                 
@@ -62,12 +74,7 @@ public:
         int y = GetRandomValue(0, cellCount - 1);
         return Vector2{(float)x, (float)y};
     }
-
-    void Respawn() {
-        position = GenerateRandomPosition();
-    }
 };
-
 
 int main () {
 
@@ -80,6 +87,30 @@ int main () {
     {
         BeginDrawing();
 
+        if (eventTriggered(0.2))
+        {
+            snake.Update();
+        }
+
+        if (IsKeyPressed(KEY_UP))
+        {
+            snake.direction = {0, -1};
+        }
+        if (IsKeyPressed(KEY_DOWN))
+        {
+            snake.direction = {0, 1};
+        }
+        if (IsKeyPressed(KEY_LEFT))
+        {
+            snake.direction = {-1, 0};
+        }
+        if (IsKeyPressed(KEY_RIGHT))
+        {
+            snake.direction = {1, 0};
+        }
+
+       
+        ClearBackground(BLACK);
         food.Draw();
         snake.Draw();
 
